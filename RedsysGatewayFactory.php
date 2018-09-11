@@ -2,12 +2,15 @@
 namespace Crevillo\Payum\Redsys;
 
 use Crevillo\Payum\Redsys\Action\NotifyAction;
+use Crevillo\Payum\Redsys\Action\RefundAction;
 use Payum\Core\Bridge\Spl\ArrayObject;
 use Payum\Core\GatewayFactory as CoreGatewayFactory;
 use Crevillo\Payum\Redsys\Action\CaptureAction;
 use Crevillo\Payum\Redsys\Action\ConvertPaymentAction;
 use Crevillo\Payum\Redsys\Action\StatusAction;
 use Payum\Core\GatewayFactoryInterface;
+use Payum\Core\HttpClientInterface;
+use Http\Message\MessageFactory;
 
 class RedsysGatewayFactory implements GatewayFactoryInterface
 {
@@ -56,6 +59,7 @@ class RedsysGatewayFactory implements GatewayFactoryInterface
             'payum.action.notify' => new NotifyAction(),
             'payum.action.convert_payment' => new ConvertPaymentAction(),
             'payum.action.status' => new StatusAction(),
+            'payum.action.refund' => new RefundAction(),
         ));
 
         if (false == $config['payum.api']) {
@@ -79,7 +83,7 @@ class RedsysGatewayFactory implements GatewayFactoryInterface
                     'sandbox' => $config['sandbox'],
                 );
 
-                return new Api($redsysConfig, $config['buzz.client']);
+                return new Api($redsysConfig, $config['payum.http_client'], $config['httplug.message_factory']);
             };
         }
 
